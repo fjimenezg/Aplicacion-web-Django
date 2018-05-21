@@ -1,0 +1,87 @@
+{% extends '01connection/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Nueva connection</h3>
+    </div>
+    <div class="box-body">
+            <div id"div_form">
+                <form method="post" id="form_connection">
+                    {% csrf_token %}                  
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <span class="input-group-addon label-info form-control">Nombre de la conexion</span>
+                            </td>
+                            <td>
+                                <input type="text" aria-describedby="sizing-addon1"  class="form-control" name="connection_name" id="connection_name">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="input-group-addon label-info form-control">Gestor de base datos</span>
+                            </td>
+                            <td>
+                                <select name="manager_db" class="form-control" onchange="update_form(this.value)">              
+                                    <option selected disabled>Selecione una opcion</option>
+                                    <option value="mysql">MySQL</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="oracle">Oracle</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="input-group-addon label-info form-control">Puerto</span>
+                            </td>
+                            <td>
+                                <input type="number" aria-describedby="sizing-addon1"  class="form-control" name="port" id="port">
+                            </td>           
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="input-group-addon label-info form-control" id="sizing-addon1">IP Servidor</span>
+                            </td>
+                            <td>
+                                <input type="text" aria-describedby="sizing-addon1" class="form-control" name="host" id="host">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="input-group-addon label-info form-control" id="sizing-addon1">Usuario</span>
+                            </td>
+                            <td>
+                                <input type="text" aria-describedby="sizing-addon1" class="form-control" name="user" id="user">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="input-group-addon label-info form-control" id="sizing-addon1">Contraseña</span>
+                            </td>
+                            <td>
+                                <input type="text" aria-describedby="sizing-addon1" class="form-control" name="passwd" id="passwd">
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td>
+                                <input type="hidden" id="url" value="{% url 'list-db' %}">                          
+                                <button id="list_db" class="btn btn-warning">
+                                    <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Listar bases de datos
+                                </button>  
+                            </td>                                                                                                                                                    
+                        </tr>                                      
+                    </table> 
+                    <div id="dblist"></div>                                  
+                </form>
+            </div>
+    </div>
+</div>
+<script src="{% static "js/jquery-3.1.1.js" %}"></script>
+<script src="{% static "js/codigo.js" %}"></script>
+{% endblock %}

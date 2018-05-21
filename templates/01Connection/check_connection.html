@@ -1,0 +1,30 @@
+{% if object_list %}
+<div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+<strong>La connection es correcta! </strong>
+</div>
+<table class="table">
+<tr>
+<td>
+
+    <select name="manager_db" class="form-control" onchange="update_form(this.value)">              
+        <option selected disabled>Selecione una base de datos</option>
+        {% for db in object_list %}
+        <option value="{{ db }}">{{ db }}</option>
+        {% endfor %}
+    </select>
+</td> 
+<td>
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span> Guardar
+    </button>
+</td>
+</tr>
+</table>
+{% else %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <strong>ERROR! </strong>
+     No se ha establecido la connection.
+</div>
+{% endif %}
