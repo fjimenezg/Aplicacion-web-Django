@@ -2,7 +2,7 @@ import psycopg2, psycopg2.extras
 import pymysql
 import cx_Oracle
 
-class Manager():
+class ManagerConnection():
     #Constructor
     def __init__(self, manager_db, user, passwd, port, host, dbname=None):
         
@@ -24,7 +24,6 @@ class Manager():
         }
 
         self.config_oracle = str(user+"/"+passwd+"@"+host)
-
 
 
     #Verifica si la connection es correcta

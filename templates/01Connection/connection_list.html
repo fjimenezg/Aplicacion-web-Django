@@ -5,12 +5,12 @@
 {% block content %}
 <div class="box box-info">
     <div class="box-header with-border">
-        <h3 class="box-title">Lista de connectiones</h3>
+        <h3 class="box-title">Lista de conexiones</h3>
     </div>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Nombre de connection</th>
+                <th>Nombre de conexion</th>
                 <th>Motor de base de datos</th>
                 <th>Usuario</th>
                 <th>IP Servidor</th>
@@ -24,36 +24,36 @@
                 {% for connection in object_list %}
                 <tr>
                     <td>
-                        {{ connection.nombre }}
+                        {{ connection.connection_name }}
                     </td>
                     <td>
-                        {{ connection.motor }}
+                        {{ connection.manager_db }}
                     </td>
                     <td>
-                        {{ connection.usuario }}
+                        {{ connection.user }}
                     </td>
                     <td>
-                        {{ connection.ip_servidor }}
+                        {{ connection.host }}
                     </td>
                     <td>
-                        {{ connection.puerto }}
+                        {{ connection.port }}
                     </td>
                     <td>
-                        {{ connection.nombre_bd }}
+                        {{ connection.dbname }}
                     </td>
                     <td>                        
-                        <a type="button" class="btn btn-primary" href="{% url 'editar-connection' connection.id %}">
+                        <a type="button" class="btn btn-primary" href="{% url 'edit-connection' connection.id %}">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
                         </a>
                         
-                        <button type="button" class="btn btn-danger" onclick="validar_eliminacion('{% url 'eliminar-connection' connection.id %}', '{{ connection.nombre }}', '{{ connection.motor }}', '{{ connection.usuario }}')">
+                        <button type="button" class="btn btn-danger" onclick="check_delete_connection('{% url 'delete-connection' connection.id %}', '{{ connection.connection_name }}', '{{ connection.manager_db }}', '{{ connection.user }}')">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar
                         </button>                      
                     </td>
                 </tr>
                 {% endfor %}
             {% else %}
-                <h1>No hay connectiones</h1>     
+                <h1>No hay conexiones</h1>     
             {% endif %}             
         </tbody>
     </table>

@@ -1,24 +1,27 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView, DetailView
 from adminapp.models import Connection
-from .. manager_connection import Manager
+from .. forms import ConnectionForm
+from .. manager_connection import ManagerConnection
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 
 # Create your views here.
+
 
 def base_connection(request):
     return render(request, "01Connection/base.html")
 
 class ConnectionCreateView(CreateView):
     model = Connection
-    fields = '__all__'
+    form_class = ConnectionForm
     template_name = "01Connection/connection_form.html"
 
 
 class ConnectionUpdateView(UpdateView):
     model = Connection
-    fields = '__all__'
-    template_name = "01Connection/connection_form.html"
+    form_class = ConnectionForm
+    template_name = "01Connection/connection_update.html"
 
 
 class ConnectionListView(ListView):
@@ -41,7 +44,7 @@ def list_db(request):
     port = request.POST['port']
     host = request.POST['host']
 
-    conn = Manager(manager_db,user,passwd,port,host)
+    conn = ManagerConnection(manager_db,user,passwd,port,host)
     context = {}
 
     if manager_db == 'mysql':
@@ -49,7 +52,7 @@ def list_db(request):
         print(dblist)
         if dblist is not None:                
             context =  {'object_list':dblist}
-        return render(request, '01Connection/check_connection.html', context)
+        return JsonResponse(context)
     if manager_db == 'postgres':
         pass
     if manager_db == 'oracle':

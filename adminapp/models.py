@@ -7,15 +7,18 @@ from django.urls import reverse
 
 class Connection(models.Model):
 
+    managers = (('mysql','MySQL'),
+                ('postgresql','postgreSQL'),
+                ('oracle','Oracle'))
+
     # Atributos del modelo conexión
-    connection_name = models.CharField(max_length=50)
+    connection_name = models.CharField(max_length=50) 
     host = models.CharField(max_length=16)
     port = models.IntegerField()
-    manager_db = models.CharField(max_length=50)
+    manager_db = models.CharField(max_length=50, choices=managers)
     user = models.CharField(max_length=50)
     passwd = models.CharField(max_length=50, blank=True)
     dbname = models.CharField(max_length=50)
-    dbname2 = models.CharField(max_length=50)
 
     def __str__(self):
         return self.nombre 
