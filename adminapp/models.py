@@ -21,7 +21,7 @@ class Connection(models.Model):
     dbname = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.nombre 
+        return self.connection_name 
     
     def get_absolute_url(self):
         return reverse('list-connections')

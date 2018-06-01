@@ -1,15 +1,4 @@
 $(document).ready(function () {
-    $("#listar_bd").click(function () {
-        $.ajax({
-            url: $("#url").val(),
-            type: "POST",
-            data: $("#form_connection").serialize(),
-            success: function (datos) {
-                $("#selector_bd").html(datos);
-            }
-        });
-    });
-
     $("#list_db").click(function (evt) {
         evt.preventDefault();
         $.ajax({
@@ -17,10 +6,10 @@ $(document).ready(function () {
             type: "POST",
             data: $("#form_connection").serialize(),
             success: function (data) {
+                $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
                 if (data.object_list) {
                     disable_input_connecion();
                     $("#alert_success").show().hide(2000);
-                    $("#id_dbname").html("");
                     data.object_list.forEach(element => {
                         $("#id_dbname").append(
                             "<option value='"+element+"'>"+element+"</option>"
@@ -70,7 +59,7 @@ function check_delete_connection(url, nombre, motor, usuario) {
     $("#mostrarmodal").modal("show");
 }
 
-function validar_eliminacion_servicio(url, nombre, rol, descripcion) {
+/*function validar_eliminacion_servicio(url, nombre, rol, descripcion) {
     $("#spn_nombre").html(nombre);
     $("#spn_rol").html(rol);
     $("#spn_descripcion").html(descripcion);
@@ -99,4 +88,4 @@ function validar_eliminacion_localizacion(url, descripcion, longitud, latitud) {
     $("#spn_latitud").html(latitud);
     $("#form_confirmacion").attr('action', url);
     $("#mostrarmodal").modal("show");
-}
+}*/
