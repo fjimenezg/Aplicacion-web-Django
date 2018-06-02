@@ -21,7 +21,7 @@ class ConnectionCreateView(CreateView):
 class ConnectionUpdateView(UpdateView):
     model = Connection
     form_class = ConnectionForm
-    template_name = "01Connection/connection_update.html"
+    template_name = "01Connection/connection_form.html"
 
 
 class ConnectionListView(ListView):
@@ -49,12 +49,12 @@ def list_db(request):
 
     if manager_db == 'mysql':
         dblist = conn.list_db() 
-        print(dblist)
         if dblist is not None:                
             context =  {'object_list':dblist}
-        return JsonResponse(context)
+        
     if manager_db == 'postgres':
         pass
     if manager_db == 'oracle':
         pass
+    return JsonResponse(context)
     
