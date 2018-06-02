@@ -14,6 +14,7 @@ $(document).ready(function () {
                 if (data.object_list) {
                     $("#alert_success").show().hide(2000);
                     disable_input_connecion();
+                    $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
                     data.object_list.forEach(element => {
                         $("#id_dbname").append(
                             "<option value='" + element + "'>" + element + "</option>"
