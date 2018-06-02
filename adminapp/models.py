@@ -11,6 +11,7 @@ class Connection(models.Model):
                 ('postgresql','postgreSQL'),
                 ('oracle','Oracle'))
 
+
     # Atributos del modelo conexión
     connection_name = models.CharField(max_length=50) 
     host = models.CharField(max_length=16)

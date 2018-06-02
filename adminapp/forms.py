@@ -18,11 +18,14 @@ class ConnectionForm(forms.ModelForm):
             'passwd',
             'dbname',
         ]
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             # Recorremos todos los campos del modelo para añadirle class="form-control
-            self.fields[field].widget.attrs.update({'class': 'form-control','required':'required'})
+            if field == "passwd":
+                self.fields[field].widget.attrs.update({'class': 'form-control'})
+            else:
+                self.fields[field].widget.attrs.update({'class': 'form-control','required':'required'})
         
-        self.fields['passwd'].widget.attrs.update({'class': 'form-control','required':'false'})
+        

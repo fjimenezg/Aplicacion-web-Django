@@ -1,11 +1,15 @@
 $(document).ready(function () {
-    $("#list_db").click(function (evt) {
-        evt.preventDefault();
+
+    $("#list_db").click(function () {
         $.ajax({
             url: $("#url").val(),
             type: "POST",
             data: $("#form_connection").serialize(),
+            beforeSend: function(){
+                $("#loader").show(); 
+            },
             success: function (data) {
+                $("#loader").hide();
                 $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
                 if (data.object_list) {
                     disable_input_connecion();
@@ -23,32 +27,36 @@ $(document).ready(function () {
     });
 
     $("#id_manager_db").change(function () {
+        $("#button_list").show();
+        $("#button_edit").hide();
+        enable_input_connection();
         if ($(this).val() == "mysql") {
             $("#id_port").val(3306);
         }
     });
+
 });
 
 function disable_input_connecion() {
     $("#button_list").hide();
     $("#button_edit").show();
-    $("#id_connection_name").attr('disabled',true);
-    $("#id_manager_db").attr('disabled',true);
-    $("#id_port").attr('disabled',true);
-    $("#id_host").attr('disabled',true);
-    $("#id_user").attr('disabled',true);
-    $("#id_passwd").attr('disabled',true);
+    $("#id_connection_name").attr('readonly',true);
+    $("#id_manager_db").attr('readonly',true);
+    $("#id_port").attr('readonly',true);
+    $("#id_host").attr('readonly',true);
+    $("#id_user").attr('readonly',true);
+    $("#id_passwd").attr('readonly',true);
 }
 
 function enable_input_connection() {
     $("#button_list").show();
     $("#button_edit").hide();
-    $("#id_connection_name").attr('disabled',false);
-    $("#id_manager_db").attr('disabled',false);
-    $("#id_port").attr('disabled',false);
-    $("#id_host").attr('disabled',false);
-    $("#id_user").attr('disabled',false);
-    $("#id_passwd").attr('disabled',false);
+    $("#id_connection_name").attr('readonly',false);
+    $("#id_manager_db").attr('readonly',false);
+    $("#id_port").attr('readonly',false);
+    $("#id_host").attr('readonly',false);
+    $("#id_user").attr('readonly',false);
+    $("#id_passwd").attr('readonly',false);
 }
 
 function check_delete_connection(url, nombre, motor, usuario) {
