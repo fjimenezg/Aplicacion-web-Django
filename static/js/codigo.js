@@ -72,6 +72,7 @@ function check_delete_connection(url, nombre, motor, usuario) {
     $("#mostrarmodal").modal("show");
 }
 
+
 /*function validar_eliminacion_servicio(url, nombre, rol, descripcion) {
     $("#spn_nombre").html(nombre);
     $("#spn_rol").html(rol);

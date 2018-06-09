@@ -73,27 +73,23 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button type="submit" class="btn btn-success">
-                                <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span> Guardar
-                            </button>
+                            <div id="button_list">
+                                <input type="hidden" id="url" value="{% url 'list-db' %}">
+                                <button type="button" id="list_db" class="btn btn-warning">
+                                    <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Listar bases de datos
+                                </button>
+                            </div>
+                            <div id="button_edit" hidden>
+                                <button type="button" class="btn btn-info" id="enable_edit">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
+                                </button>
+                                <button type="submit" class="btn btn-success" id="enable_edit">
+                                    <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Guardar
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </form>
-                <tr>
-                    <td>
-                        <div id="button_list">
-                            <input type="hidden" id="url" value="{% url 'list-db' %}">
-                            <button id="list_db" class="btn btn-warning">
-                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Listar bases de datos
-                            </button>
-                        </div>
-                        <div id="button_edit" hidden>
-                            <button class="btn btn-info" id="enable_edit">
-                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
-                            </button>
-                        </div>
-                    </td>
-                </tr>
             </table>
             <div id="loader" hidden>
                 <center>

@@ -50,6 +50,24 @@ def list_db(request):
     if manager_db == 'mysql':
         dblist = conn.list_db() 
         if dblist is not None:                
+            context =  {'object_list':dblist} 
+    if manager_db == 'postgres':
+        pass 
+    if manager_db == 'oracle':
+        pass
+    return JsonResponse(context)
+
+def check_connection():
+    manager_db = request.POST['manager_db']
+    user = request.POST['user']
+    passwd = request.POST['passwd']
+    port = request.POST['port']
+    host = request.POST['host']
+    dbname = request.POST['dbname']
+
+    if manager_db == 'mysql':
+        dblist = conn.list_db() 
+        if dblist is not None:                
             context =  {'object_list':dblist}
         
     if manager_db == 'postgres':

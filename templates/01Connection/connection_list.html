@@ -16,6 +16,7 @@
                 <th>IP Servidor</th>
                 <th>Puerto</th>
                 <th>Base de datos</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -37,6 +38,9 @@
                     </td>
                     <td>
                         {{ connection.port }}
+                    </td>
+                    <td>
+                        {{ connection.dbname }}
                     </td>
                     <td>
                         {{ connection.dbname }}
