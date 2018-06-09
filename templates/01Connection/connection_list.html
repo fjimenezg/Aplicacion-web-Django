@@ -42,8 +42,7 @@
                     <td>
                         {{ connection.dbname }}
                     </td>
-                    <td>
-                        {{ connection.dbname }}
+                    <td onload="check_connection('asdfasdf')">                       
                     </td>
                     <td>                        
                         <a type="button" class="btn btn-primary" href="{% url 'edit-connection' connection.id %}">

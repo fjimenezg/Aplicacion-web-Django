@@ -13,7 +13,7 @@ class Connection(models.Model):
 
 
     # Atributos del modelo conexión
-    connection_name = models.CharField(max_length=50) 
+    connection_name = models.CharField(max_length=50, unique=True) 
     host = models.CharField(max_length=16)
     port = models.IntegerField()
     manager_db = models.CharField(max_length=50, choices=managers)

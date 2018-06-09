@@ -8,7 +8,7 @@ $(document).ready(function () {
             beforeSend: function () {
                 $("#loader").show();
             },
-            
+
             success: function (data) {
                 $("#loader").hide();
                 if (data.object_list) {
@@ -20,13 +20,13 @@ $(document).ready(function () {
                             "<option value='" + element + "'>" + element + "</option>"
                         );
                     });
-                } else { 
+                } else {
                     $("#loader").hide();
                     $("#alert_error").show().hide(2000);
                 }
             },
 
-            error: function (){
+            error: function () {
                 $("#loader").hide();
                 $("#alert_error").show().hide(2000);
             }
@@ -51,6 +51,8 @@ $(document).ready(function () {
         $("#id_user").removeAttr('readonly');
         $("#id_passwd").removeAttr('readonly');
     });
+
+
 });
 
 function disable_input_connecion() {
@@ -64,6 +66,39 @@ function disable_input_connecion() {
     $("#id_passwd").attr('readonly', true);
 }
 
+function check_connection(url) {
+    $.ajax({
+        url: url,
+        type: "GET",
+
+        beforeSend: function () {
+            $("#loader").show();
+        },
+
+        success: function (data) {
+            $("#loader").hide();
+            if (data.object_list) {
+                $("#alert_success").show().hide(2000);
+                disable_input_connecion();
+                $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
+                data.object_list.forEach(element => {
+                    $("#id_dbname").append(
+                        "<option value='" + element + "'>" + element + "</option>"
+                    );
+                });
+            } else {
+                $("#loader").hide();
+                $("#alert_error").show().hide(2000);
+            }
+        },
+
+        error: function () {
+            $("#loader").hide();
+            $("#alert_error").show().hide(2000);
+        }
+    });
+}
+
 function check_delete_connection(url, nombre, motor, usuario) {
     $("#spn_nombre").html(nombre);
     $("#spn_motor").html(motor);
@@ -71,7 +106,6 @@ function check_delete_connection(url, nombre, motor, usuario) {
     $("#form_confirmacion").attr('action', url);
     $("#mostrarmodal").modal("show");
 }
-
 
 /*function validar_eliminacion_servicio(url, nombre, rol, descripcion) {
     $("#spn_nombre").html(nombre);

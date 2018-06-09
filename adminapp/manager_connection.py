@@ -7,14 +7,16 @@ class ManagerConnection():
     def __init__(self, manager_db, user, passwd, port, host, dbname=None):
         
         self.manager_db = manager_db
-        self.dbname = dbname
 
         self.config_mysql = {
             'user': user,
             'password': passwd,
             'host': host,
-            'port': int(port),
+            'port': int(port),                
         }
+
+        if dbname is not None:
+            self.config_mysql['db'] = dbname
 
         self.config_postgre = {
             'user': user,
