@@ -11,6 +11,8 @@ class Connection(models.Model):
                 ('postgresql','postgreSQL'),
                 ('oracle','Oracle'))
 
+    managers2 = ()
+
 
     # Atributos del modelo conexión
     connection_name = models.CharField(max_length=50, unique=True) 

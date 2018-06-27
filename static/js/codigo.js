@@ -1,19 +1,21 @@
 $(document).ready(function () {
+
+    check_connection();
+
     $("#list_db").click(function () {
         $.ajax({
             url: $("#url").val(),
             type: "POST",
             data: $("#form_connection").serialize(),
-
             beforeSend: function () {
                 $("#loader").show();
             },
-
             success: function (data) {
                 $("#loader").hide();
                 if (data.object_list) {
                     $("#alert_success").show().hide(2000);
-                    disable_input_connecion();
+                    $("#button_list").hide();
+                    $("#button_save").show();
                     $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
                     data.object_list.forEach(element => {
                         $("#id_dbname").append(
@@ -35,67 +37,64 @@ $(document).ready(function () {
     });
 
     $("#id_manager_db").change(function () {
-        if ($(this).val() == "mysql") {
-            $("#id_port").val(3306);
+        switch ($(this).val()) {
+            case "mysql":
+                $("#id_port").val(3306);
+                break;
+            
+            case "postgresql":
+                $("#id_port").val(5432);
+                break;
+        
+            case "oracle":
+                $("#id_port").val(1521);
+                break;
         }
     });
 
-    $("#enable_edit").click(function () {
+    $("input[id]").keydown(function () {
         $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
         $("#button_list").show();
-        $("#button_edit").hide();
-        $("#id_connection_name").removeAttr('readonly');
-        $("#id_manager_db").removeAttr('readonly');
-        $("#id_port").removeAttr('readonly');
-        $("#id_host").removeAttr('readonly');
-        $("#id_user").removeAttr('readonly');
-        $("#id_passwd").removeAttr('readonly');
+        $("#button_save").hide();
     });
 
+    $("#id_connection_name").keydown(function () {
+        $("#alert_error_connection_name").hide(); 
+    });
 
+    $("#id_manager_db").change(function () {
+        $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
+        $("#button_list").show();
+        $("#button_save").hide();
+    });
+
+    $("#refresh_state_connections").click(function(){
+        check_connection();
+    });
 });
 
-function disable_input_connecion() {
-    $("#button_list").hide();
-    $("#button_edit").show();
-    $("#id_connection_name").attr('readonly', true);
-    $("#id_manager_db").attr('readonly', true);
-    $("#id_port").attr('readonly', true);
-    $("#id_host").attr('readonly', true);
-    $("#id_user").attr('readonly', true);
-    $("#id_passwd").attr('readonly', true);
-}
-
-function check_connection(url) {
-    $.ajax({
-        url: url,
-        type: "GET",
-
-        beforeSend: function () {
-            $("#loader").show();
-        },
-
-        success: function (data) {
-            $("#loader").hide();
-            if (data.object_list) {
-                $("#alert_success").show().hide(2000);
-                disable_input_connecion();
-                $("#id_dbname").html("<option value='' selected disabled>Selecione una base de datos</option>");
-                data.object_list.forEach(element => {
-                    $("#id_dbname").append(
-                        "<option value='" + element + "'>" + element + "</option>"
-                    );
-                });
-            } else {
-                $("#loader").hide();
-                $("#alert_error").show().hide(2000);
+function check_connection() {
+    $("td[id]").each(function (index, element) {
+        $.ajax({
+            url: "/connection/" + $(this).attr("id") + "/check",
+            type: "GET",
+            success: function (data) {
+                if (data.object == true) {
+                    $(element).html("<center>" +
+                        "<span class='glyphicon glyphicon-ok-circle label-success'></span>" +
+                        "</center>");
+                } else {
+                    $(element).html("<center>" +
+                        "<span class='glyphicon glyphicon-remove-circle label-danger'></span>" +
+                        "</center>");
+                }
+            },
+            error: function () {
+                $(element).html("<center>" +
+                    "<span class='glyphicon glyphicon-remove-circle label-danger'></span>" +
+                    "</center>");
             }
-        },
-
-        error: function () {
-            $("#loader").hide();
-            $("#alert_error").show().hide(2000);
-        }
+        });
     });
 }
 
@@ -107,33 +106,3 @@ function check_delete_connection(url, nombre, motor, usuario) {
     $("#mostrarmodal").modal("show");
 }
 
-/*function validar_eliminacion_servicio(url, nombre, rol, descripcion) {
-    $("#spn_nombre").html(nombre);
-    $("#spn_rol").html(rol);
-    $("#spn_descripcion").html(descripcion);
-    $("#form_confirmacion").attr('action', url);
-    $("#mostrarmodal").modal("show");
-}
-
-function validar_eliminacion_directorio(url, dependencia, extension, linea_directa) {
-    $("#spn_dependencia").html(dependencia);
-    $("#spn_extension").html(extension);
-    $("#spn_linea_directa").html(linea_directa);
-    $("#form_confirmacion").attr('action', url);
-    $("#mostrarmodal").modal("show");
-}
-
-function validar_eliminacion_articulo(url, descripcion, fecha) {
-    $("#spn_descripcion").html(descripcion);
-    $("#spn_fecha").html(fecha);
-    $("#form_confirmacion").attr('action', url);
-    $("#mostrarmodal").modal("show");
-}
-
-function validar_eliminacion_localizacion(url, descripcion, longitud, latitud) {
-    $("#spn_descripcion").html(descripcion);
-    $("#spn_longitud").html(longitud);
-    $("#spn_latitud").html(latitud);
-    $("#form_confirmacion").attr('action', url);
-    $("#mostrarmodal").modal("show");
-}*/

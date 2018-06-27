@@ -53,8 +53,7 @@ def list_db(request):
 
 def check_connection(request, id_connection):
     connection = Connection.objects.get(id=id_connection)
-    print(connection)
-    conn = ManagerConnection(manager_db,user,passwd,port,host,dbname)         
+    conn = ManagerConnection(connection.manager_db,connection.user,connection.passwd,connection.port,connection.host,connection.dbname)        
     context =  {'object':conn.check_connection()}
     return JsonResponse(context) 
     
