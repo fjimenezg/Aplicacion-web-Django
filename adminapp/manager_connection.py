@@ -25,7 +25,6 @@ class ManagerConnection():
     #Verifica si la connection es correcta
     def check_connection(self):
         if self.manager_db == 'mysql':
-            print("Intentando conexion a MySQL")
             try:
                 conn = pymysql.connect(**self.config_connection)
                 conn.close()
@@ -34,7 +33,6 @@ class ManagerConnection():
                 return False
 
         if self.manager_db == 'postgresql':
-            print("Intentando conexion a postgreSQL")
             try:
                 conn = psycopg2.connect(**self.config_connection)              
                 conn.close()    
@@ -43,9 +41,8 @@ class ManagerConnection():
                 return False
 
         if self.manager_db == 'oracle':
-            print("************Intentando conexion a oracle************")
-            try: 
-                conn=cx_Oracle.connect(self.config_oracle)
+            try:
+                conn=cx_Oracle.connect(self.config_oracle) 
                 conn.close()
                 return True
             except:
@@ -54,7 +51,6 @@ class ManagerConnection():
     #Consulta las bases de datos de un gestor  
     def list_db(self):
         if self.manager_db == 'mysql':
-            print("Listando bases de datos MySQL")
             if self.check_connection():
                 conn = pymysql.connect(**self.config_connection)          
                 cursor = conn.cursor() 
@@ -66,7 +62,6 @@ class ManagerConnection():
             return None
 
         if self.manager_db == 'postgresql':
-            print("Listando bases de datos postgreSQL")
             if self.check_connection():
                 conn = psycopg2.connect(**self.config_connection)          
                 cursor = conn.cursor() 
@@ -84,7 +79,6 @@ class ManagerConnection():
             return None
 
         if self.manager_db == 'oracle':
-            print("Listando bases de datos Oracle")
             conn=cx_Oracle.connect(self.config_oracle)
             cursor = conn.cursor() 
             query="select APPLICATION_NAME from APEX_APPLICATIONS" 
@@ -94,21 +88,57 @@ class ManagerConnection():
             return data
         return None
 
+    #Ejecuta consultas para una conexion
     def managerSQL(self, query):
         if self.manager_db == 'mysql':
             if self.check_connection():
-                self.config_mysql['dbname'] = self.dbname
-                conn = pymysql.connect(**self.config_connection)          
-                cursor = conn.cursor() 
-                query = "show databases"
-                cursor.execute(query)
-                data = [row[0] for row in cursor.fetchall()]
-                conn.close()
-                return data
-            return None
+                try:
+                    conn = pymysql.connect(**self.config_connection)          
+                    cursor = conn.cursor(pymysql.cursors.DictCursor) 
+                    cursor.execute(query)
+                    data = cursor.fetchall()
+                    conn.close()
+                    return data
+                except:
+                    return None
 
         if self.manager_db == 'postgresql':
+            try:
+                conn = psycopg2.connect(**self.config_connection)      
+                cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)  
+                cursor.execute(query)
+                data = cursor.fetchall()
+                conn.close()
+                return data
+            except:
+                return None
+
+        if self.manager_db == 'oracle':
             pass
+
+    def getColumns(self, query):
+        if self.manager_db == 'mysql':
+            if self.check_connection():
+                try:
+                    conn = pymysql.connect(**self.config_connection)          
+                    cursor = conn.cursor(pymysql.cursors.DictCursor) 
+                    cursor.execute(query)
+                    columns = [column[0] for column in cursor.description]
+                    conn.close()
+                    return columns
+                except:
+                    return None
+
+        if self.manager_db == 'postgresql':
+            try:
+                conn = psycopg2.connect(**self.config_connection)      
+                cursor = conn.cursor()  
+                cursor.execute(query)
+                columns = [column[0] for column in cursor.description]
+                conn.close()
+                return columns
+            except:
+                return None
 
         if self.manager_db == 'oracle':
             pass

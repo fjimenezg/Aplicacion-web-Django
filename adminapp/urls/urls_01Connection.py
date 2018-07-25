@@ -9,4 +9,6 @@ urlpatterns = [
     path('connection/<int:pk>/edit', views_01Connection.ConnectionUpdateView.as_view(), name='edit-connection'),   
     path('connection/list', views_01Connection.ConnectionListView.as_view(), name='list-connections'),
     path('connection/<int:pk>/delete', views_01Connection.ConnectionDeleteView.as_view(), name='delete-connection'),
+    path('connection/test', views_01Connection.ConnectionTestView.as_view(), name='test-connection'),
+    path('connection/run', views_01Connection.test_connection, name='run-test'),
 ]

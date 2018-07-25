@@ -41,11 +41,11 @@ $(document).ready(function () {
             case "mysql":
                 $("#id_port").val(3306);
                 break;
-            
+
             case "postgresql":
                 $("#id_port").val(5432);
                 break;
-        
+
             case "oracle":
                 $("#id_port").val(1521);
                 break;
@@ -59,7 +59,7 @@ $(document).ready(function () {
     });
 
     $("#id_connection_name").keydown(function () {
-        $("#alert_error_connection_name").hide(); 
+        $("#alert_error_connection_name").hide();
     });
 
     $("#id_manager_db").change(function () {
@@ -68,8 +68,26 @@ $(document).ready(function () {
         $("#button_save").hide();
     });
 
-    $("#refresh_state_connections").click(function(){
+    $("#refresh_state_connections").click(function () {
         check_connection();
+    });
+
+    $("#form_test").submit(function (evt) {
+        evt.preventDefault();
+        $.ajax({
+            url: $("#url").val(),
+            type: "POST",
+            data: $("#form_test").serialize(),
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                $("#result_query").html(data);
+            },
+
+            error: function () {
+            }
+        });
     });
 });
 

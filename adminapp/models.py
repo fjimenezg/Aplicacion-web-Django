@@ -11,9 +11,6 @@ class Connection(models.Model):
                 ('postgresql','postgreSQL'),
                 ('oracle','Oracle'))
 
-    managers2 = ()
-
-
     # Atributos del modelo conexión
     connection_name = models.CharField(max_length=50, unique=True) 
     host = models.CharField(max_length=16)
@@ -28,3 +25,23 @@ class Connection(models.Model):
     
     def get_absolute_url(self):
         return reverse('list-connections')
+
+
+class Service(models.Model):
+    """Model definition for Service."""
+
+    # TODO: Define fields here
+
+    connection = models.ForeignKey(Connection, on_delete=models.CASCADE)
+    service_name = models.CharField(max_length=50, unique=True)
+    query_sql = models.CharField(max_length=300)
+    
+    class Meta:
+        """Meta definition for Service."""
+
+        verbose_name = 'Service'
+        verbose_name_plural = 'Services'
+
+    def __str__(self):
+        """Unicode representation of Service."""
+        return self.service_name
