@@ -4,6 +4,11 @@ from .models import Service
 from .manager_connection import ManagerConnection
 from collections import OrderedDict
 
+def create_resolve(field):
+    method_str = """def resolve_"""+field+"""(self, info, **kwargs):
+    return self['"""+field+"""']
+    """
+    return method_str
 
 class ResolveField:
     def __init__(self, service_name):
@@ -30,7 +35,6 @@ class ResolveField:
         self.runConnection()
         if self.connection is not None:       
             data = self.connection.managerSQL(self.service[0].query_sql)
-            print("Asdfasdfasdfasdfas")  
             for fact in data:
                 if str(fact[field]) == value:
                     return fact
@@ -101,11 +105,18 @@ type('GenericType',(graphene.ObjectType,),fields)
 #=============================================================== 
 
 class Query(graphene.ObjectType):
+    fields_service = ResolveField('servicio1').getColumns()
+    clsattr_service = {}
+    for field in fields_service:
+        clsattr_service.update({field:graphene.String()})
+        attr = {}
+        exec(create_resolve(field), globals(), attr)
+        clsattr_service.update(attr)
 
     student = graphene.Field(StudentType, code=graphene.String())
     offer = graphene.Field(OfferType, code=graphene.String())
 
-    all_students = graphene.List(StudentType)
+    all_students = graphene.List(type('StudentType2',(graphene.ObjectType,),clsattr_service))
     all_offers = graphene.List(OfferType)
 
     def resolve_student(self, info, **kwargs):

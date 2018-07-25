@@ -4,6 +4,17 @@ from .models import Service
 from .manager_connection import ManagerConnection
 from collections import OrderedDict
 
+def create_resolve(field):
+    method_str = """def resolve_"""+field+"""(self, info, **kwargs):
+    return self['"""+field+"""']
+    """
+    return method_str
+
+def create_resolve_query(service_name):
+    method_str = """def resolve_"""+service_name+"""(self, info, **kwargs):
+    return ResolveField('"""+service_name+"""').get_list()
+    """
+    return method_str
 
 class ResolveField:
     def __init__(self, service_name):
@@ -54,22 +65,27 @@ class ResolveField:
 
 
 clsattr_query= {}
+clsattr_service = {}
 
 services = Service.objects.all()
 
 for service in services:
     fields_service = ResolveField(service.service_name).getColumns()
-    clsattr_service = {}
+    clsattr_service.clear()
 
     for field in fields_service:
         clsattr_service.update({field:graphene.String()})
-        clsattr_service.update({'resolve_'+field:lambda self,info,**kwargs: self[field]})
+        attr = {}
+        exec(create_resolve(field), globals(), attr)
+        clsattr_service.update(attr)
+
 
     clsattr_query.update({service.service_name:graphene.List(
         type(service.service_name, (graphene.ObjectType,), clsattr_service)
     )})
 
-    clsattr_query.update({'resolve_'+service.service_name: lambda self,info,**kwargs: ResolveField(service.service_name).get_list()})
-
+    attr = {}
+    exec(create_resolve_query(service.service_name), globals(), attr)
+    clsattr_query.update(attr)
 
 Query = type('Query', (graphene.ObjectType,), clsattr_query)
