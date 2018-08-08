@@ -40,13 +40,19 @@ class ResolveField:
                     return fact
         return None
 
-    def get_list(self):
+    def get_list(self, filter={}):
         print("=================================")
         self.runConnection()
         if self.connection is not None:
             data = self.connection.managerSQL(self.service[0].query_sql)
-            listData = [data for data in data]
-            return listData
+            if len(filter) > 0:
+                for key, value in filter.items():
+                    filtered_data = []
+                    for fact in data:
+                        if str(fact[key]) == str(value):
+                            filtered_data.append(fact)
+                    data = filtered_data
+            return data
         return None
 
     def getColumns(self):
@@ -116,7 +122,9 @@ class Query(graphene.ObjectType):
     student = graphene.Field(StudentType, code=graphene.String())
     offer = graphene.Field(OfferType, code=graphene.String())
 
-    all_students = graphene.List(type('StudentType2',(graphene.ObjectType,),clsattr_service))
+    c = {'semestre':graphene.String(), 'programa':graphene.String()}
+
+    all_students = graphene.List(type('StudentType2',(graphene.ObjectType,),clsattr_service), c)
     all_offers = graphene.List(OfferType)
 
     def resolve_student(self, info, **kwargs):
@@ -130,7 +138,7 @@ class Query(graphene.ObjectType):
             return ResolveField("servicio2").get_field("codigo", code)
 
     def resolve_all_students(self, info, **kwargs):
-        return ResolveField("servicio1").get_list()
+        return ResolveField("servicio1").get_list(kwargs)
 
     def resolve_all_offers(self, info, **kwargs):
         return ResolveField("servicio2").get_list()
