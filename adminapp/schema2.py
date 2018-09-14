@@ -1,36 +1,76 @@
 import graphene
-from graphene_django.types import DjangoObjectType
 from .models import Service
-from .resolve import resolve_field, resolve_service, ResolveService
+from .resolve import resolve_field, resolve_service
 
 services = Service.objects.all()
-clsattr_query = {}
+dict_types = {}
+dict_clsattr_query = {}
 
-for service in services:
-    resolve = ResolveService(service)
+# Esta funcion crea un diccionario con los campos y funciones resolvedoras de un servicio
+def build_dict_fields(service):
+    clsattr_service = {}
+    fields_service = service.get_fields_service()
 
-    if resolve.is_active():
-        fields_service = resolve.get_columns()
-        clsattr_service = {}
-
+    if fields_service is not None:
         for field in fields_service:
             clsattr_service.update({field: graphene.String()})
             attr = {}
             exec(resolve_field(field), globals(), attr)
             clsattr_service.update(attr)
 
-        clsattr_query.update(
+        links = service.get_links()
+        if links is not None:
+            for key, value in links.items():
+                linked_service = Service.objects.get(service_name=key)
+                clsattr_service.update(
+                    {
+                        key: graphene.List(
+                            build_type(linked_service),
+                            dict.fromkeys(
+                                linked_service.get_fields_service(), graphene.String()
+                            ),
+                        )
+                    }
+                )
+
+                attr = {}
+                exec(resolve_service(key, value), globals(), attr)
+                clsattr_service.update(attr)
+
+    return clsattr_service
+
+
+def build_type(service):
+    if service not in dict_types:
+        dict_types.update(
             {
-                service.service_name: graphene.List(
-                    type(service.service_name, (graphene.ObjectType,), clsattr_service),
-                    dict.fromkeys(service.get_items_list(), graphene.String()),
+                service: type(
+                    service.class_name,
+                    (graphene.ObjectType,),
+                    build_dict_fields(service),
                 )
             }
         )
+    return dict_types[service]
 
-        attr = {}
-        exec(resolve_service(service.service_name), globals(), attr)
-        clsattr_query.update(attr)
 
-Query = type("Query", (graphene.ObjectType,), clsattr_query)
+def build_clsattr_query():
+    for service in services:
+        if service.is_active():
+            dict_clsattr_query.update(
+                {
+                    service.service_name: graphene.List(
+                        build_type(service),
+                        dict.fromkeys(service.get_fields_service(), graphene.String()),
+                    )
+                }
+            )
+
+            attr = {}
+            exec(resolve_service(service.service_name), globals(), attr)
+            dict_clsattr_query.update(attr)
+
+
+build_clsattr_query()
+Query = type("Query", (graphene.ObjectType,), dict_clsattr_query)
 

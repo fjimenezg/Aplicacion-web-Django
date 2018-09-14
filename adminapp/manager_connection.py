@@ -100,7 +100,8 @@ class ManagerConnection():
                     conn.close()
                     return data
                 except:
-                    return None
+                    pass
+            return None
 
         if self.manager_db == 'postgresql':
             try:
