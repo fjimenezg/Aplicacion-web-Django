@@ -63,7 +63,7 @@ class Service(models.Model):
     def get_list_search(self, filter={}):
         connection = ManagerConnection(**self.connection.get_data_connection())
         data = connection.managerSQL(self.query_sql)
-        print(filter)
+        print("#################")
         if data is not None:
             if len(filter) > 0:
                 for key, value in filter.items():

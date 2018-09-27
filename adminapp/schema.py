@@ -163,3 +163,6 @@ class Query(graphene.ObjectType):
 
     def resolve_all_offers(self, info, **kwargs):
         return ResolveField("servicio2").get_list()
+
+    def resolve_Grades(self, info, **kwargs):
+        return ResolveField("servicio2").get_list()
