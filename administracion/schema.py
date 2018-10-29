@@ -1,9 +1,9 @@
 import graphene
 #import adminapp.schema
-import adminapp.schema2
+import app_services.schema2
 
 
-class Query(adminapp.schema2.Query,  graphene.ObjectType):
+class Query(app_services.schema2.Query,  graphene.ObjectType):
     # This class will inherit from multiple Queries
     # as we begin to add more apps to our project
     pass

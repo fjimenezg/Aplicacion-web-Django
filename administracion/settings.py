@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "graphene_django",
     "django_graphiql",
-    "adminapp",
+    "app_admin",
+    "app_connection",
+    "app_services",
 ]
 
 GRAPHENE = {"SCHEMA": "administracion.schema.schema"}
