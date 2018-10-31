@@ -1,0 +1,69 @@
+{% extends 'Services/base.html' %} {% load static %} {% block content %}
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Lista de servicios</h3><br>
+    </div>
+    <a type="button" class="btn btn-primary" href="{% url 'service-create' %}"> <!---->
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar
+    </a> 
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Permisos</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if object_list %} {% for service in object_list %}
+            <tr>
+                <td>
+                    {{ service.name }}
+                </td>
+                <td>
+                    {{ service.kind }}
+                </td>
+                <td>
+                    {{ service.permits }}
+                </td>
+                <td>
+                    {{ service.state }}
+                </td>
+                <td>
+                    <a type="button" class="btn btn-primary" href="{% url 'service-edit' service.id %}"> <!---->
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
+                    </a> 
+                    {% if service.kind == 'item' %}
+                    <a type="button" class="btn btn-primary" href="{% url 'item-configure' service.id %}"> <!---->
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
+                    </a> 
+                    {% endif %}
+                    {% if service.kind == 'sqlquery' %}
+                    <a type="button" class="btn btn-primary" href="{% url 'query-configure' service.id %}"> 
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
+                    </a> 
+                    {% endif %}
+                    {% if service.kind == 'localization' %}
+                    <a type="button" class="btn btn-primary" href="{% url 'location-configure' service.id %}"> 
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
+                    </a> 
+                    {% endif %}
+                    {% if service.kind == 'directory' %}
+                    <a type="button" class="btn btn-primary" href="{% url 'office-configure' service.id %}"> 
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
+                    </a> 
+                    {% endif %}
+                    <button type="button" class="btn btn-danger" href="{% url 'service-delete' service.id %}"> 
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar
+                    </button>
+                </td>
+            </tr>
+            {% endfor %} {% else %}
+            <h1>No hay servicios</h1>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

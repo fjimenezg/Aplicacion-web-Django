@@ -1,0 +1,51 @@
+{% extends 'Services/base.html' %} {% load static %} {% block content %}
+<div class="box box-info">
+    <a type="button" class="btn btn-default" href="{% url 'service-list' %}"> <!---->
+        <span class="glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span> Atras
+    </a> 
+
+    <div class="box-header with-border">
+        <h3 class="box-title">Lista de oficinas</h3><br>
+    </div>
+
+    <a type="button" class="btn btn-primary" href="{% url 'office-create' service_id %}"> <!---->
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar
+    </a> 
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Extension</th>
+                <th>Telefono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if object_list %} {% for office in object_list %}
+            <tr>
+                <td>
+                    {{ office.name }}
+                </td>
+                <td>
+                    {{ office.extension }}
+                </td>
+                <td>
+                    {{ office.phone }}
+                </td>
+                <td>
+                    <a type="button" class="btn btn-primary" href="{% url 'office-edit' service_id office.id %}"> <!---->
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
+                    </a> 
+                    <a type="button" class="btn btn-danger" href="{% url 'office-delete' service_id office.id %}"> 
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% endfor %} {% else %}
+            <h1>No hay oficinas registradas</h1>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
