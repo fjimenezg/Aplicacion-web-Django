@@ -1,47 +1,86 @@
-# -*- coding: utf-8 -*-
 from django import forms
-from .models import Service
+from .models import *
 
-#Formulario para gestionar conexión.
-class ServiceForm(forms.ModelForm):
-    
+# Formulario para gestionar conexión.
+class QueryForm(forms.ModelForm):
     class Meta:
 
-        model = Service 
+        model = SQLQuery
 
         fields = [
-            'connection',
-            'service_name',
-            'type_name',
-            'query_sql',
-            'icon',
-            'unique_key'
+            "connection",
+            "type_name",
+            "query_sql",
         ]
 
         labels = {
-            'connection':'Conexión a la base de datos',
-            'service_name':'Nombre del servicio',
-            'type_name':'Nombre de clase',
-            'query_sql':'Sentencia de datos sql',
+            "connection": "Conexión a la base de datos",
+            "type_name": "Nombre de clase",
+            "query_sql": "Sentencia de datos sql",
         }
 
         error_messages = {
-            'service_name': {
-                'unique':"El nombre del servicio ya existe.",
-            },
-            'type_name':{
-                'unique':'El nombre de la clase ya existe'
-            }
+            "type_name": {"unique": "El nombre de la clase ya existe"},
         }
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         for field in self.fields:
-            self.fields[field].widget.attrs.update({'class': 'form-control'})
-        
+            self.fields[field].widget.attrs.update({"class": "form-control"})
 
 
-        
-        
+# Formulario para gestionar conexión.
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ["name", "kind", "permits", "state"]
+        error_messages = {"name": {"unique": "El nombre del servicio ya existe."}}
+
+
+# Formulario para gestionar artículos perdidos.
+class MissingItemForm(forms.ModelForm):
+    class Meta:
+        model = MissingItem
+        fields = ["name", "Service", "description", "photo"]
+        labels = {
+            "name": "Nombre",
+            "Service": "Servicio asociado",
+            "description": "Descripcion",
+            "photo": "Foto",
+        }
+        error_messages = {"name": {"unique": "El nombre del objeto ya existe."}}
+
+
+# Formulario para gestionar directorio de names.
+class OfficeForm(forms.ModelForm):
+    class Meta:
+        model = Office
+
+        fields = ["name", "extension", "phone"]
+
+        labels = {"name": "Nombre", "extension": "Extension", "phone": "Telefono"}
+
+        """widget={
+            'name':forms.TextInput(attrs={'class':'form-control'}),
+            'extension':forms.TextInput(attrs={'class':'form-control'}),
+            'phone':forms.TextInput(attrs={'class':'form-control'}),
+        }"""
+
+
+# Formulario para gestionar locaclizaciones.
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+
+        fields = ["name", "longitude", "latitude"]
+
+        labels = {"name": "Nombre", "longitude": "Longitud", "latitude": "Latitud"}
+
+        """
+        widget={
+            'name':forms.TextInput(attrs={'class':'form-control'}),
+            'longitude':forms.TextInput(attrs={'class':'form-control'}),
+            'latitude':forms.TextInput(attrs={'class':'form-control'}),
+        }"""
+
