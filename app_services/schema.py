@@ -1,93 +1,105 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-from .models import Service
-from global_.manager_connection import ManagerConnection
-from collections import OrderedDict
+from .models import Service, Location, MissingItem, Office, SQLQuery
 
-class OfferType(graphene.ObjectType):
+class ServiceType(DjangoObjectType):
+    class Meta:
+        model = Service
 
-    training = graphene.String()
-    tittle = graphene.String()
-    length = graphene.String()
-    amount = graphene.String()
+class LocationType(DjangoObjectType):
+    class Meta:
+        model = Location
 
-    def resolve_training(self, info, **kwargs):
-        return self['formacion']
-    
-    def resolve_tittle(self, info, **kwargs):
-        return self['titulo']
-    
-    def resolve_length(self, info, **kwargs):
-        return self['duracion']
-    
-    def resolve_amount(self, info, **kwargs):
-        return self['valor']
+class MissingItemType(DjangoObjectType):
+    class Meta:
+        model = MissingItem
 
-class Grades(graphene.ObjectType):
-    grade = graphene.String()
-    subject = graphene.String()
-    codigoEstudiante = graphene.String()
-
-    def resolve_grade(self, info, **kwargs):
-        return self['nota']
-
-    def resolve_subject(self, info, **kwargs):
-        return self['codigo_materia']
-    
-    def resolve_codigoEstudiante(self, info, **kwargs):
-        return self['codigoEstudiante']
-
-    
-class StudentType(graphene.ObjectType):
-
-    code = graphene.String()
-    name = graphene.String()
-    program = graphene.String()
-    semester = graphene.String()
-    grades = graphene.List(Grades, code=graphene.String())
-
-    
-    def resolve_code(self, info, **kwargs):
-        return self["codigo"]
-
-    def resolve_name(self, info, **kwargs):
-        print(self)
-        return self["nombres"]
-
-    def resolve_semester(self, info, **kwargs):
-        return self["semestre"]
-
-    def resolve_grades(self, info, **kwargs):
-        kwargs['codigoEstudiante'] = self['codigo']
-        return ResolveField("servicio3").get_list(kwargs)
+class OfficeType(DjangoObjectType):
+    class Meta:
+        model = Office
 
 
-class Query(graphene.ObjectType):
-    student = graphene.Field(StudentType, code=graphene.String())
-    offer = graphene.Field(OfferType, code=graphene.String())
+class Query(graphene.AbstractType):
+    all_services = graphene.List(ServiceType,kind=graphene.String())
+    all_locations = graphene.List(LocationType,id=graphene.Int())
+    all_items = graphene.List(MissingItemType,id=graphene.Int())
+    all_offices = graphene.List(OfficeType,id=graphene.Int())
+    service = graphene.Field(ServiceType,id=graphene.Int())
+    location = graphene.Field(LocationType,id=graphene.Int())
+    item = graphene.Field(MissingItemType,id=graphene.Int())
+    office = graphene.Field(OfficeType,id=graphene.Int())
 
-    c = {'semestre':graphene.String(), 'programa':graphene.String(), 'codigo':graphene.String()}
+    def resolve_all_services(self, info, **kwargs):
+        kind = kwargs.get('kind')
+        if kind is not None:
+            return Service.objects.all().filter(kind=kind)
+        
+        return Service.objects.all()
 
-    all_students = graphene.List(StudentType, c)
-    all_offers = graphene.List(OfferType)
-    Grades = graphene.List(Grades)
+    def resolve_all_locations(self, info, **kwargs):
+        id = kwargs.get('id')
+        source = None
 
-    def resolve_student(self, info, **kwargs):
-        code = kwargs.get("code")
-        if code is not None:
-            return ResolveField("servicio4").get_field("codigo", code)
-    
-    def resolve_offer(self, info, **kwargs):
-        code = kwargs.get("code")
-        if code is not None:
-            return ResolveField("servicio2").get_field("codigo", code)
+        if id is not None:
+            source = Service.objects.get(pk=id)
 
-    def resolve_all_students(self, info, **kwargs):
-        print(ResolveField("servicio4").get_list(kwargs))
-        return ResolveField("servicio4").get_list(kwargs)
+        if source is not None:
+            return Location.objects.all().filter(Service=source)
 
-    def resolve_all_offers(self, info, **kwargs):
-        return ResolveField("servicio2").get_list()
+        return Location.objects.all()
 
-    def resolve_Grades(self, info, **kwargs):
-        return ResolveField("servicio2").get_list()
+    def resolve_all_items(self, info, **kwargs):
+        id = kwargs.get('id')
+        source = None
+
+        if id is not None:
+            source = Service.objects.get(pk=id)
+
+        if source is not None:
+            return MissingItem.objects.all().filter(Service=source)
+
+        return MissingItem.objects.all()
+
+    def resolve_all_offices(self, info, **kwargs):
+        id = kwargs.get('id')
+        source = None
+
+        if id is not None:
+            source = Service.objects.get(pk=id)
+
+        if source is not None:
+            return Office.objects.all().filter(Service=source)
+
+        return Office.objects.all()
+
+    def resolve_service(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return Service.objects.get(pk=id)
+
+        return None
+
+    def resolve_location(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return Location.objects.get(pk=id)
+
+        return None
+
+    def resolve_item(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return MissingItem.objects.get(pk=id)
+
+        return None
+
+    def resolve_office(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return Office.objects.get(pk=id)
+
+        return None

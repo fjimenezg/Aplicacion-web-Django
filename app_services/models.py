@@ -17,12 +17,9 @@ class Service(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
     kind = models.CharField(max_length=20, choices=kinds)
-    permits = models.IntegerField()
     state = models.BooleanField()
-    unique_key = models.CharField(max_length=50, blank=True)
     description = models.CharField(max_length=300, blank=True)
     roles = models.CharField(max_length=100, blank=True)
-    links = models.CharField(max_length=300, blank=True)
     
     def __str__(self):
         return self.name
@@ -62,6 +59,7 @@ class SQLQuery(models.Model):
     def get_list_search(self, filter={}):
         connection = ManagerConnection(**self.connection.get_data_connection())
         data = connection.managerSQL(self.query_sql)
+        
         if data is not None:
             if len(filter) > 0:
                 for key, value in filter.items():

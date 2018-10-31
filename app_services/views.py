@@ -149,8 +149,14 @@ class LocationDeleteView(DeleteView):
 class QueryCreateView(CreateView):
     model = SQLQuery
     form_class = QueryForm
-    initial = {"o":"John Mario"}
     template_name = "Services/query_configure.html"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.Service = Service.objects.get(id=self.kwargs["service_id"])
+        self.object.save()
+        return super(QueryCreateView, self).form_valid(form)
+
 
 def get_fields_service(request):
     query_sql = request.POST["query_sql"]

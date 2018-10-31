@@ -4,7 +4,6 @@
         <h3 class="box-title">Nuevo servicio</h3>
     </div>
     <div class="box-body">
-        asdfads {{ form.o }}
         <form method="post" id="form_service">
             <table class="table">
                 {% csrf_token %}
@@ -28,7 +27,7 @@
 
                 <tr>
                     <td>
-                        <span class="input-group-addon label-info form-control" id="sizing-addon1">Nombre de clase</span>
+                        <span class="input-group-addon label-info form-control" id="sizing-addon1">Nombre del tipo</span>
                     </td>
                     <td>
                         {{ form.type_name }}
@@ -64,7 +63,7 @@
                                             del servicio</span>
                                     </td>
                                     <td>
-                                        {{ form.service_name }}
+                                        <span class="input-group-addon label-info form-control" id="sizing-addon1" id="name"></span>
                                     </td>
                                 </tr>
 

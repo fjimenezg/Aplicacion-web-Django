@@ -1,12 +1,12 @@
 import graphene
-from .models import Service
+from .models import SQLQuery, Service
 from .resolve import *
 from promise import Promise
 from promise.dataloader import DataLoader
 
-services = Service.objects.all()
+queries = SQLQuery.objects.all()
 dict_types = {}
-dict_clsattr_query = {}
+dict_clsattr_SQLServicesType = {}
 dict_dataloader = {}
 
 
@@ -22,8 +22,10 @@ def build_dict_fields(service):
     clsattr_service = {}
 
     clsattr_service.update({"name": graphene.String()})
-    clsattr_service.update({"key": graphene.String()})
-    clsattr_service.update({"icon": graphene.String()})
+    clsattr_service.update({"kind": graphene.String()})
+    clsattr_service.update({"state": graphene.String()})
+    clsattr_service.update({"description": graphene.String()})
+    clsattr_service.update({"roles": graphene.String()})
     clsattr_service.update(
         {
             "data": graphene.List(
@@ -34,13 +36,19 @@ def build_dict_fields(service):
     )
 
     clsattr_service.update(
-        {"resolve_name": lambda self, info, **kwargs: self.service_name}
+        {"resolve_name": lambda self, info, **kwargs: self.Service.name}
     )
     clsattr_service.update(
-        {"resolve_key": lambda self, info, **kwargs: self.unique_key}
+        {"resolve_kind": lambda self, info, **kwargs: self.Service.kind}
     )
     clsattr_service.update(
-        {"resolve_icon": lambda self, info, **kwargs: self.icon}
+        {"resolve_state": lambda self, info, **kwargs: self.Service.state}
+    )
+    clsattr_service.update(
+        {"resolve_descriptio": lambda self, info, **kwargs: self.Service.description}
+    )
+    clsattr_service.update(
+        {"resolve_roles": lambda self, info, **kwargs: self.Service.roles}
     )
     clsattr_service.update(
         {"resolve_data": lambda self, info, **kwargs: self.get_list_search(kwargs)}
@@ -74,7 +82,7 @@ def build_type(service):
             clsattr_service.update(
                 {"resolve_" + field: lambda self, info, **kwargs: self[info.field_name]}
             )
-
+        """
         links = service.get_links()
         if links is not None:
             for key, value in links.items():
@@ -95,22 +103,23 @@ def build_type(service):
                 clsattr_service.update(attr)
 
                 build_loader(linked_service)
+                """
 
     return type(service.type_name + "Data", (graphene.ObjectType,), clsattr_service)
 
 
-def build_clsattr_query():
-    for service in services:
-        if service.is_active():
+def build_clsattr_SQLServicesType():
+    for query in queries:
+        if query.is_active():
             try:
-                dict_clsattr_query.update(
-                    {service.type_name: graphene.Field(build_service(service))}
+                dict_clsattr_SQLServicesType.update(
+                    {query.type_name: graphene.Field(build_service(query))}
                 )
 
-                dict_clsattr_query.update(
+                dict_clsattr_SQLServicesType.update(
                     {
                         "resolve_"
-                        + service.type_name: lambda self, info, **kwargs: Service.objects.get(
+                        + query.type_name: lambda self, info, **kwargs: self.get(
                             type_name=info.field_name
                         )
                     }
@@ -119,5 +128,13 @@ def build_clsattr_query():
                 print("Algo salio mal")
 
 
-build_clsattr_query()
-Query = type("Query", (graphene.ObjectType,), dict_clsattr_query)
+build_clsattr_SQLServicesType()
+
+
+class Query(graphene.ObjectType):
+    SQLServices = graphene.Field(
+        type("SQLServices", (graphene.ObjectType,), dict_clsattr_SQLServicesType)
+    )
+
+    def resolve_SQLServices(self, info, **kwargs):
+        return SQLQuery.objects.all()
