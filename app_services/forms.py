@@ -34,7 +34,7 @@ class QueryForm(forms.ModelForm):
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ["name", "kind", "roles", "state"]
+        fields = ["name", "icon", "kind", "state", "permits", "description"]
         error_messages = {"name": {"unique": "El nombre del servicio ya existe."}}
 
 
@@ -42,10 +42,9 @@ class ServiceForm(forms.ModelForm):
 class MissingItemForm(forms.ModelForm):
     class Meta:
         model = MissingItem
-        fields = ["name", "Service", "description", "photo"]
+        fields = ["name", "description", "photo"]
         labels = {
             "name": "Nombre",
-            "Service": "Servicio asociado",
             "description": "Descripcion",
             "photo": "Foto",
         }

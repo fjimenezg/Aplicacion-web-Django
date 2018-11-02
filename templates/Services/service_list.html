@@ -35,7 +35,7 @@
                     <a type="button" class="btn btn-primary" href="{% url 'service-edit' service.id %}"> <!---->
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
                     </a> 
-                    {% if service.kind == 'item' %}
+                    {% if service.kind == 'catalog' %}
                     <a type="button" class="btn btn-primary" href="{% url 'item-configure' service.id %}"> <!---->
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
@@ -45,7 +45,7 @@
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind == 'localization' %}
+                    {% if service.kind == 'map' %}
                     <a type="button" class="btn btn-primary" href="{% url 'location-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 

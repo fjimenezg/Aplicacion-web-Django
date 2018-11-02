@@ -5,21 +5,38 @@ from app_connection.models import Connection
 import ast
 
 # Create your models here.
+class Permits(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    student = models.BooleanField(default=False)
+    teacher = models.BooleanField(default=False)
+    clerk = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+class Icon(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    image = models.ImageField(upload_to='icons')
+
+    def __str__(self):
+        return self.title
 
 # Modelo principal de servicios.
 class Service(models.Model):
     kinds = (
         ('sqlquery', 'Consulta SQL'),
-        ('item', 'Objetos Perdidos'),
+        ('catalog', 'Catalogo de Objetos Perdidos'),
         ('directory', 'Directorio de Dependencias'),
-        ('localization', 'Geolocalizacion de Bloques'),
+        ('map', 'Mapa de Bloques'),
     )
 
     name = models.CharField(max_length=100, unique=True)
+    icon = models.ForeignKey(Icon, on_delete="PROTECTED")
     kind = models.CharField(max_length=20, choices=kinds)
-    state = models.BooleanField()
+    permits = models.ForeignKey(Permits, on_delete="PROTECTED")
+    state = models.BooleanField(default=False)
     description = models.CharField(max_length=300, blank=True)
-    roles = models.CharField(max_length=100, blank=True)
+    
     
     def __str__(self):
         return self.name
@@ -27,10 +44,9 @@ class Service(models.Model):
     def get_absolute_url(self):
         return reverse('service-list')
 
-
 # Modelo de configuracion de servicios de consulta SQL
 class SQLQuery(models.Model):
-    Service = models.OneToOneField(Service, primary_key=True, on_delete="CASCADE",
+    service = models.OneToOneField(Service, primary_key=True, on_delete="CASCADE",
                                     limit_choices_to={'kind': 'sqlquery'},
                                     related_name="query", related_query_name="query")
     connection = models.ForeignKey(Connection, on_delete=models.CASCADE)
@@ -83,10 +99,10 @@ class SQLQuery(models.Model):
 
 # Modelos de items individuales, asociados a un servicio general de Objetos Perdidos, Directorio y Geolocalizacion
 class MissingItem(models.Model):
-    Service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': 'item'},
+    service = models.ForeignKey(Service, on_delete="CASCADE",
+                                limit_choices_to={'kind': 'catalog'},
                                 related_name="items", related_query_name="item")
-    name = models.CharField(max_length=100) 
+    name = models.CharField(max_length=100, unique=True) 
     description = models.CharField(max_length=200) 
     date = models.DateField(auto_now_add=True)
     photo = models.ImageField(blank=True, upload_to='photos')
@@ -98,10 +114,10 @@ class MissingItem(models.Model):
         return reverse('item-list')
 
 class Office(models.Model):
-    Service = models.ForeignKey(Service, on_delete="CASCADE",
+    service = models.ForeignKey(Service, on_delete="CASCADE",
                                 limit_choices_to={'kind': 'directory'},
                                 related_name="offices", related_query_name="office")
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     extension = models.CharField(max_length=50, blank=True)
     phone = models.CharField(max_length=50, blank=True)
 
@@ -112,10 +128,12 @@ class Office(models.Model):
         return reverse('office-list')
 
 class Location(models.Model):
-    Service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': 'localization'},
+    service = models.ForeignKey(Service, on_delete="CASCADE",
+                                limit_choices_to={'kind': 'map'},
                                 related_name="locations", related_query_name="location")
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=300, blank=True)
+    icon = models.ForeignKey(Icon, on_delete="PROTECTED", default=None, blank=True)
     longitude = models.CharField(max_length=100)
     latitude = models.CharField(max_length=100)
 

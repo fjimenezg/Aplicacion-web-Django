@@ -30,7 +30,7 @@ class ServiceDeleteView(DeleteView):
 
 # Catalogo de objetos perdidos
 def item_configure(request,service_id):
-    items = MissingItem.objects.all().filter(Service=Service.objects.get(pk=service_id))
+    items = MissingItem.objects.all().filter(service=Service.objects.get(pk=service_id))
     return render(request, 'Services/item_configure.html', {'object_list':items,'service_id':service_id})
 
 def item_create(request,service_id):
@@ -70,7 +70,7 @@ class MissingItemDeleteView(DeleteView):
 
 # Directorio de dependencias
 def office_configure(request,service_id):
-    offices = Office.objects.all().filter(Service=Service.objects.get(pk=service_id))
+    offices = Office.objects.all().filter(service=Service.objects.get(pk=service_id))
     return render(request, 'Services/office_configure.html', {'object_list':offices,'service_id':service_id})
 
 def office_create(request,service_id):
@@ -108,7 +108,7 @@ class OfficeDeleteView(DeleteView):
 
 # Mapa de bloques
 def location_configure(request,service_id):
-    locations = Location.objects.all().filter(Service=Service.objects.get(pk=service_id))
+    locations = Location.objects.all().filter(service=Service.objects.get(pk=service_id))
     return render(request, 'Services/location_configure.html', {'object_list':locations,'service_id':service_id})
 
 def location_create(request,service_id):
@@ -153,7 +153,7 @@ class QueryCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.Service = Service.objects.get(id=self.kwargs["service_id"])
+        self.object.service = Service.objects.get(id=self.kwargs["service_id"])
         self.object.save()
         return super(QueryCreateView, self).form_valid(form)
 
