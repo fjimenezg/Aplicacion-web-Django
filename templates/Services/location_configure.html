@@ -5,10 +5,10 @@
     </a> 
 
     <div class="box-header with-border">
-        <h3 class="box-title">Lista de bloques</h3><br>
+        <h3 class="box-title">{{ service.title }}</h3><br>
     </div>
 
-    <a type="button" class="btn btn-primary" href="{% url 'location-create' service_id %}"> <!---->
+    <a type="button" class="btn btn-primary" href="{% url 'location-create' service.id %}"> <!---->
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar
     </a> 
 
@@ -25,7 +25,7 @@
             {% if object_list %} {% for location in object_list %}
             <tr>
                 <td>
-                    {{ location.name }}
+                    {{ location.title }}
                 </td>
                 <td>
                     {{ location.longitude }}
@@ -34,16 +34,16 @@
                     {{ location.latitude }}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-primary" href="{% url 'location-edit' service_id location.id %}"> <!---->
+                    <a type="button" class="btn btn-primary" href="{% url 'location-edit' service.id location.id %}"> <!---->
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
                     </a> 
-                    <a type="button" class="btn btn-danger" href="{% url 'location-delete' service_id location.id %}"> 
+                    <a type="button" class="btn btn-danger" href="{% url 'location-delete' service.id location.id %}"> 
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar
                     </a>
                 </td>
             </tr>
             {% endfor %} {% else %}
-            <h1>No hay bloques registrados</h1>
+            <h1>No hay sitios registrados</h1>
             {% endif %}
         </tbody>
     </table>

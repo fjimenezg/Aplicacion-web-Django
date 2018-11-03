@@ -34,21 +34,21 @@ class QueryForm(forms.ModelForm):
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ["name", "icon", "kind", "state", "permits", "description"]
-        error_messages = {"name": {"unique": "El nombre del servicio ya existe."}}
+        fields = ["title", "icon", "kind", "state", "permits", "description"]
+        error_messages = {"title": {"unique": "El nombre del servicio ya existe."}}
 
 
 # Formulario para gestionar artículos perdidos.
 class MissingItemForm(forms.ModelForm):
     class Meta:
         model = MissingItem
-        fields = ["name", "description", "photo"]
+        fields = ["title", "description", "photo"]
         labels = {
-            "name": "Nombre",
+            "title": "Nombre",
             "description": "Descripcion",
             "photo": "Foto",
         }
-        error_messages = {"name": {"unique": "El nombre del objeto ya existe."}}
+        error_messages = {"title": {"unique": "El nombre del objeto ya existe."}}
 
 
 # Formulario para gestionar directorio de names.
@@ -56,9 +56,9 @@ class OfficeForm(forms.ModelForm):
     class Meta:
         model = Office
 
-        fields = ["name", "extension", "phone"]
+        fields = ["title", "extension", "phone"]
 
-        labels = {"name": "Nombre", "extension": "Extension", "phone": "Telefono"}
+        labels = {"title": "Nombre", "extension": "Extension", "phone": "Telefono"}
 
         """widget={
             'name':forms.TextInput(attrs={'class':'form-control'}),
@@ -72,9 +72,9 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
 
-        fields = ["name", "longitude", "latitude"]
+        fields = ["title", "longitude", "latitude"]
 
-        labels = {"name": "Nombre", "longitude": "Longitud", "latitude": "Latitud"}
+        labels = {"title": "Nombre", "longitude": "Longitud", "latitude": "Latitud"}
 
         """
         widget={

@@ -5,10 +5,10 @@
     </a> 
 
     <div class="box-header with-border">
-        <h3 class="box-title">Lista de oficinas</h3><br>
+        <h3 class="box-title">{{ service.title }}</h3><br>
     </div>
 
-    <a type="button" class="btn btn-primary" href="{% url 'office-create' service_id %}"> <!---->
+    <a type="button" class="btn btn-primary" href="{% url 'office-create' service.id %}"> <!---->
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar
     </a> 
 
@@ -25,7 +25,7 @@
             {% if object_list %} {% for office in object_list %}
             <tr>
                 <td>
-                    {{ office.name }}
+                    {{ office.title }}
                 </td>
                 <td>
                     {{ office.extension }}
@@ -34,16 +34,16 @@
                     {{ office.phone }}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-primary" href="{% url 'office-edit' service_id office.id %}"> <!---->
+                    <a type="button" class="btn btn-primary" href="{% url 'office-edit' service.id office.id %}"> <!---->
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
                     </a> 
-                    <a type="button" class="btn btn-danger" href="{% url 'office-delete' service_id office.id %}"> 
+                    <a type="button" class="btn btn-danger" href="{% url 'office-delete' service.id office.id %}"> 
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar
                     </a>
                 </td>
             </tr>
             {% endfor %} {% else %}
-            <h1>No hay oficinas registradas</h1>
+            <h1>Este directorio esta vacio</h1>
             {% endif %}
         </tbody>
     </table>

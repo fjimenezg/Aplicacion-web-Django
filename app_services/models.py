@@ -21,25 +21,25 @@ class Icon(models.Model):
     def __str__(self):
         return self.title
 
+class Kind(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=300, blank=True)
+
+    def __str__(self):
+        return self.title
+
 # Modelo principal de servicios.
 class Service(models.Model):
-    kinds = (
-        ('sqlquery', 'Consulta SQL'),
-        ('catalog', 'Catalogo de Objetos Perdidos'),
-        ('directory', 'Directorio de Dependencias'),
-        ('map', 'Mapa de Bloques'),
-    )
-
-    name = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=100, unique=True)
     icon = models.ForeignKey(Icon, on_delete="PROTECTED")
-    kind = models.CharField(max_length=20, choices=kinds)
+    kind = models.ForeignKey(Kind, on_delete="PROTECTED")
     permits = models.ForeignKey(Permits, on_delete="PROTECTED")
     state = models.BooleanField(default=False)
     description = models.CharField(max_length=300, blank=True)
     
     
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         return reverse('service-list')
@@ -47,7 +47,7 @@ class Service(models.Model):
 # Modelo de configuracion de servicios de consulta SQL
 class SQLQuery(models.Model):
     service = models.OneToOneField(Service, primary_key=True, on_delete="CASCADE",
-                                    limit_choices_to={'kind': 'sqlquery'},
+                                    limit_choices_to={'kind': '4'},
                                     related_name="query", related_query_name="query")
     connection = models.ForeignKey(Connection, on_delete=models.CASCADE)
     type_name = models.CharField(max_length=50, unique=True)
@@ -100,45 +100,45 @@ class SQLQuery(models.Model):
 # Modelos de items individuales, asociados a un servicio general de Objetos Perdidos, Directorio y Geolocalizacion
 class MissingItem(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': 'catalog'},
+                                limit_choices_to={'kind': '1'},
                                 related_name="items", related_query_name="item")
-    name = models.CharField(max_length=100, unique=True) 
+    title = models.CharField(max_length=100, unique=True) 
     description = models.CharField(max_length=200) 
     date = models.DateField(auto_now_add=True)
     photo = models.ImageField(blank=True, upload_to='photos')
     
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         return reverse('item-list')
 
 class Office(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': 'directory'},
+                                limit_choices_to={'kind': '2'},
                                 related_name="offices", related_query_name="office")
-    name = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=100, unique=True)
     extension = models.CharField(max_length=50, blank=True)
     phone = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         return reverse('office-list')
 
 class Location(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': 'map'},
+                                limit_choices_to={'kind': '3'},
                                 related_name="locations", related_query_name="location")
-    name = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=300, blank=True)
     icon = models.ForeignKey(Icon, on_delete="PROTECTED", default=None, blank=True)
     longitude = models.CharField(max_length=100)
     latitude = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         return reverse('location-list')

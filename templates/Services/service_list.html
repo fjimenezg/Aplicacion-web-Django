@@ -20,7 +20,7 @@
             {% if object_list %} {% for service in object_list %}
             <tr>
                 <td>
-                    {{ service.name }}
+                    {{ service.title }}
                 </td>
                 <td>
                     {{ service.kind }}
@@ -35,22 +35,22 @@
                     <a type="button" class="btn btn-primary" href="{% url 'service-edit' service.id %}"> <!---->
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
                     </a> 
-                    {% if service.kind == 'catalog' %}
+                    {% if service.kind.id == 1 %}
                     <a type="button" class="btn btn-primary" href="{% url 'item-configure' service.id %}"> <!---->
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind == 'sqlquery' %}
+                    {% if service.kind.id == 4 %}
                     <a type="button" class="btn btn-primary" href="{% url 'query-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind == 'map' %}
+                    {% if service.kind.id == 3 %}
                     <a type="button" class="btn btn-primary" href="{% url 'location-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind == 'directory' %}
+                    {% if service.kind.id == 2 %}
                     <a type="button" class="btn btn-primary" href="{% url 'office-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 

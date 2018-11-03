@@ -30,8 +30,9 @@ class ServiceDeleteView(DeleteView):
 
 # Catalogo de objetos perdidos
 def item_configure(request,service_id):
-    items = MissingItem.objects.all().filter(service=Service.objects.get(pk=service_id))
-    return render(request, 'Services/item_configure.html', {'object_list':items,'service_id':service_id})
+    service = Service.objects.get(pk=service_id)
+    items = MissingItem.objects.all().filter(service=service)
+    return render(request, 'Services/item_configure.html', {'object_list':items,'service':service})
 
 def item_create(request,service_id):
     success_url = reverse_lazy('service-list')
@@ -70,8 +71,9 @@ class MissingItemDeleteView(DeleteView):
 
 # Directorio de dependencias
 def office_configure(request,service_id):
-    offices = Office.objects.all().filter(service=Service.objects.get(pk=service_id))
-    return render(request, 'Services/office_configure.html', {'object_list':offices,'service_id':service_id})
+    service = Service.objects.get(pk=service_id)
+    offices = Office.objects.all().filter(service=service)
+    return render(request, 'Services/office_configure.html', {'object_list':offices,'service':service})
 
 def office_create(request,service_id):
     success_url = reverse_lazy('service-list')
@@ -108,8 +110,9 @@ class OfficeDeleteView(DeleteView):
 
 # Mapa de bloques
 def location_configure(request,service_id):
-    locations = Location.objects.all().filter(service=Service.objects.get(pk=service_id))
-    return render(request, 'Services/location_configure.html', {'object_list':locations,'service_id':service_id})
+    service = Service.objects.get(pk=service_id)
+    locations = Location.objects.all().filter(service=service)
+    return render(request, 'Services/location_configure.html', {'object_list':locations,'service':service})
 
 def location_create(request,service_id):
     success_url = reverse_lazy('service-list')
