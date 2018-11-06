@@ -3,6 +3,7 @@ from .models import SQLQuery, Service
 from .resolve import *
 from promise import Promise
 from promise.dataloader import DataLoader
+from graphql_jwt.decorators import login_required
 
 queries = SQLQuery.objects.all()
 dict_types = {}
@@ -132,9 +133,23 @@ build_clsattr_SQLServicesType()
 
 
 class Query(graphene.ObjectType):
-    SQLServices = graphene.Field(
-        type("SQLServices", (graphene.ObjectType,), dict_clsattr_SQLServicesType)
-    )
+    if len(queries) != 0:
+        SQLServices = graphene.Field(
+            type("SQLServices", (graphene.ObjectType,), dict_clsattr_SQLServicesType)
+        )
+
+    user = graphene.String(token=graphene.String(required=True))
 
     def resolve_SQLServices(self, info, **kwargs):
+        print(info.context.user)
         return SQLQuery.objects.all()
+
+    @login_required
+    def resolve_user(self, info, **kwargs):
+        try:
+            from django.contrib.auth.models import User
+            user = User.objects.get(username=info.context.user)
+        except:
+            print("Error")
+        return info.context.user
+
