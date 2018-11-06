@@ -22,6 +22,7 @@ class Icon(models.Model):
         return self.title
 
 class Kind(models.Model):
+    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=300, blank=True)
 

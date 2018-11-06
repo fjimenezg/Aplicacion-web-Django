@@ -30,6 +30,38 @@ class KindType(DjangoObjectType):
     class Meta:
         model = Kind
 
+class ServicePrueba(graphene.ObjectType):
+    id = graphene.Int()
+    title = graphene.String()
+    icon = graphene.String()
+    permits = graphene.Field(PermitsType)
+    state = graphene.Boolean()
+    description = graphene.String()
+
+    def resolve_id(self, info, **kwargs):
+        return self.id
+
+    def resolve_title(self, info, **kwargs):
+        return self.title
+
+    def resolve_icon(self, info, **kwargs):
+        return self.icon.image
+    
+    def resolve_permist(self, info, **kwargs):
+        return self.permits.title
+    
+    def resolve_state(self, info, **kwargs):
+        return self.state
+    
+    def resolve_description(self, info, **kwargs):
+        return self.description
+
+class Services(graphene.ObjectType):
+    service = graphene.Field(ServicePrueba)
+
+    def resolve_service(self, info, **kwargs):
+        return self
+
 class Directory(graphene.ObjectType):
     id = graphene.Int()
     title = graphene.String()
@@ -58,7 +90,7 @@ class Directory(graphene.ObjectType):
         return self.description
     
     def resolve_office(self, info, **kwargs):
-        return Office.objects.all().filter(service=self)
+        return Office.objects.all().filter(service=self)    
 
 class Directories(graphene.ObjectType):
     directory = graphene.Field(Directory)
@@ -68,6 +100,8 @@ class Directories(graphene.ObjectType):
 
 class Query(graphene.AbstractType):
     directories = graphene.List(Directories, title=graphene.String())
+    services = graphene.List(Services)
+
     get_all_services = graphene.List(ServiceType,kind=graphene.String())
 
     get_map = graphene.List(LocationType,id=graphene.Int())
@@ -187,3 +221,6 @@ class Query(graphene.AbstractType):
         if title is not None:
             return Service.objects.all().filter(kind=2, title=title)
         return Service.objects.all().filter(kind=2)
+
+    def resolve_services(self, info, **kwargs):
+        return Service.objects.all()
