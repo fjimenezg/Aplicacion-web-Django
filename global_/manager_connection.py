@@ -156,3 +156,5 @@ class ManagerConnection:
         cursor.execute("select typname from pg_type where oid=" + type_code)
         cursor.close()
         return cursor.fetchall()
+
+    
