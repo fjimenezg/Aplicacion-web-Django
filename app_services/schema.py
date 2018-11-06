@@ -85,7 +85,7 @@ class Query(graphene.AbstractType):
             source = Service.objects.get(pk=id)
 
         if source is not None:
-            return Location.objects.all().filter(Service=source)
+            return Location.objects.all().filter(service=source)
 
         return Location.objects.all()
 
@@ -97,7 +97,7 @@ class Query(graphene.AbstractType):
             source = Service.objects.get(pk=id)
 
         if source is not None:
-            return MissingItem.objects.all().filter(Service=source)
+            return MissingItem.objects.all().filter(service=source)
 
         return MissingItem.objects.all()
 
@@ -109,7 +109,7 @@ class Query(graphene.AbstractType):
             source = Service.objects.get(pk=id)
 
         if source is not None:
-            return Office.objects.all().filter(Service=source)
+            return Office.objects.all().filter(service=source)
 
         return Office.objects.all()
 
