@@ -36,15 +36,24 @@ class Directory(graphene.ObjectType):
     permits = graphene.Field(PermitsType)
     state = graphene.String()
     description = graphene.String()
-    phone = graphene.List(OfficeType)
+    phones = graphene.List(OfficeType)
 
     def resolve_title(self, info, **kwargs):
         return self.title
 
     def resolve_icon(self, info, **kwargs):
-        return self.title
+        return self.icon.image
     
-    def resolve_phone(self, info, **kwargs):
+    def resolve_permist(self, info, **kwargs):
+        return self.permits
+    
+    def resolve_state(self, info, **kwargs):
+        return self.state
+    
+    def resolve_description(self, info, **kwargs):
+        return self.description
+    
+    def resolve_phones(self, info, **kwargs):
         return Office.objects.all().filter(service=self)
 
 class Directories(graphene.ObjectType):
