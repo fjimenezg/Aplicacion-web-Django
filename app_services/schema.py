@@ -26,6 +26,9 @@ class IconType(DjangoObjectType):
     class Meta:
         model = Icon
 
+class KindType(DjangoObjectType):
+    class Meta:
+        model = Kind
 
 class Query(graphene.AbstractType):
     
@@ -36,6 +39,7 @@ class Query(graphene.AbstractType):
     get_directory = graphene.List(OfficeType,id=graphene.Int())
 
     get_icon = graphene.List(IconType,id=graphene.Int())
+    get_kind = graphene.List(IconType,id=graphene.Int())
     get_permits = graphene.List(PermitsType,id=graphene.Int())
 
     get_service = graphene.Field(ServiceType,id=graphene.Int())
@@ -93,6 +97,14 @@ class Query(graphene.AbstractType):
             return Service.objects.get(pk=id).icon    
 
         return Icons.objects.all()
+
+    def resolve_get_kind(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return Service.objects.get(pk=id).kind  
+
+        return Kind.objects.all()
 
     def resolve_get_permits(self, info, **kwargs):
         id = kwargs.get('id')
