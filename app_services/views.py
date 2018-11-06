@@ -172,3 +172,4 @@ def get_fields_service(request):
 
     context = {"object_list": fields_service}
     return JsonResponse(context)
+
