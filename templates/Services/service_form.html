@@ -9,20 +9,20 @@
     <div class="box-body">
         <div id "div_form">
             <table class="table">
-                {% if form.name.errors %}
-                <div id="alert_error_name" class="alert alert-warning">
+                {% if form.title.errors %}
+                <div id="alert_error_title" class="alert alert-warning">
                     <button type="button" class="close" data-dismiss="alert">x</button>
-                    <strong>{{ form.name.errors }}</strong>
+                    <strong>{{ form.title.errors }}</strong>
                 </div>
                 {% endif %}
                 <form method="post" id="form_service">
                     {% csrf_token %}
                     <tr>
                         <td width="25%">
-                            <span class="input-group-addon label-info form-control">Nombre del Servicio</span>
+                            <span class="input-group-addon label-info form-control">Titulo del Servicio</span>
                         </td>
                         <td>
-                            {{ form.name }}
+                            {{ form.title }}
                         </td>
                     </tr>
                     <tr>
