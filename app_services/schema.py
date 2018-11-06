@@ -30,6 +30,9 @@ class KindType(DjangoObjectType):
     class Meta:
         model = Kind
 
+class Directory(graphene.ObjectType):
+    data
+
 class Query(graphene.AbstractType):
     
     get_all_services = graphene.List(ServiceType,kind=graphene.String())
@@ -88,7 +91,7 @@ class Query(graphene.AbstractType):
         if source is not None:
             return Office.objects.all().filter(service=source)
 
-        return Office.objects.all()
+        return Office.objects.all().order_by('service')
 
     def resolve_get_icon(self, info, **kwargs):
         id = kwargs.get('id')
