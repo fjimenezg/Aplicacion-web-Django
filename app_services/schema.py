@@ -31,10 +31,34 @@ class KindType(DjangoObjectType):
         model = Kind
 
 class Directory(graphene.ObjectType):
-    data
+    id = graphene.Int()
+    title = graphene.String()
+    icon = graphene.String()
+    permits = graphene.Field(PermitsType)
+    state = graphene.Boolean()
+    description = graphene.String()
+    phone = graphene.List(OfficeType)
+
+    def resolve_id(self, info, **kwargs):
+        return self.id
+
+    def resolve_title(self, info, **kwargs):
+        return self.title
+
+    def resolve_icon(self, info, **kwargs):
+        return self.icon.image
+    
+    def resolve_phone(self, info, **kwargs):
+        return Office.objects.all().filter(service=self)
+
+class Directories(graphene.ObjectType):
+    directory = graphene.Field(Directory)
+
+    def resolve_directory(self, info, **kwargs):
+        return self
 
 class Query(graphene.AbstractType):
-    
+    directories = graphene.List(Directories, title=graphene.String())
     get_all_services = graphene.List(ServiceType,kind=graphene.String())
 
     get_map = graphene.List(LocationType,id=graphene.Int())
@@ -148,3 +172,9 @@ class Query(graphene.AbstractType):
             return Office.objects.get(pk=id)
 
         return None
+
+    def resolve_directories(self, info, **kwargs):
+        title = kwargs.get('title')
+        if title is not None:
+            return Service.objects.all().filter(kind=2, title=title)
+        return Service.objects.all().filter(kind=2)
