@@ -46,7 +46,7 @@ class Service(models.Model):
 # Modelo de configuracion de servicios de consulta SQL
 class SQLQuery(models.Model):
     service = models.OneToOneField(Service, primary_key=True, on_delete="CASCADE",
-                                    limit_choices_to={'kind': '4'},
+                                    limit_choices_to={'kind': 'query'},
                                     related_name="query", related_query_name="query")
     connection = models.ForeignKey(Connection, on_delete=models.CASCADE)
     type_name = models.CharField(max_length=50, unique=True)
@@ -99,7 +99,7 @@ class SQLQuery(models.Model):
 # Modelos de items individuales, asociados a un servicio general de Objetos Perdidos, Directorio y Geolocalizacion
 class MissingItem(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': '1'},
+                                limit_choices_to={'kind': 'catalog'},
                                 related_name="items", related_query_name="item")
     title = models.CharField(max_length=100, unique=True) 
     description = models.CharField(max_length=200) 
@@ -114,7 +114,7 @@ class MissingItem(models.Model):
 
 class Office(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': '2'},
+                                limit_choices_to={'kind': 'directory'},
                                 related_name="offices", related_query_name="office")
     title = models.CharField(max_length=100, unique=True)
     extension = models.CharField(max_length=50, blank=True)
@@ -128,7 +128,7 @@ class Office(models.Model):
 
 class Location(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
-                                limit_choices_to={'kind': '3'},
+                                limit_choices_to={'kind': 'map'},
                                 related_name="locations", related_query_name="location")
     title = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=300, blank=True)
