@@ -2,10 +2,6 @@ import graphene
 from graphene_django.types import DjangoObjectType
 from .models import *
 
-class ServiceType(DjangoObjectType):
-    class Meta:
-        model = Service
-
 class LocationType(DjangoObjectType):
     class Meta:
         model = Location
@@ -18,25 +14,15 @@ class OfficeType(DjangoObjectType):
     class Meta:
         model = Office
 
-class PermitsType(DjangoObjectType):
-    class Meta:
-        model = Permits
-
-class IconType(DjangoObjectType):
-    class Meta:
-        model = Icon
-
-class KindType(DjangoObjectType):
-    class Meta:
-        model = Kind
-
-class ServicePrueba(graphene.ObjectType):
+class ServiceType(graphene.ObjectType):
     id = graphene.Int()
     title = graphene.String()
     icon = graphene.String()
     permits = graphene.Field(PermitsType)
     state = graphene.Boolean()
     description = graphene.String()
+    if self.kind=='directory':
+        data = graphene.List(OfficeType)
 
     def resolve_id(self, info, **kwargs):
         return self.id
@@ -47,14 +33,35 @@ class ServicePrueba(graphene.ObjectType):
     def resolve_icon(self, info, **kwargs):
         return self.icon.image
     
-    def resolve_permist(self, info, **kwargs):
-        return self.permits.title
-    
+    def resolve_kind(self, info, **kwargs):
+        if self.kind=='directory':
+            return 'OfficeType'
+        elif self.kind=='catalog':
+            return 'MissingItemType'
+        elif self.kind=='map':
+            return 'LocationType'
+        elif self.kind=='query':
+            return 'Pendiente'
+        else:
+            return 'None'
+      
     def resolve_state(self, info, **kwargs):
         return self.state
     
     def resolve_description(self, info, **kwargs):
         return self.description
+    
+    def resolve_data(self, info, **kwargs):
+        if self.kind=='directory':
+            return Office.objects.filter(service=self)
+        elif self.kind=='catalog':
+            return MissingItem.objects.filter(service=self)
+        elif self.kind=='map':
+            return Location.objects.filter(service=self)
+        elif self kind=='query':
+            return SQLQuery.objects.filter(service=self)
+        else:
+            return 'None'
 
 class Services(graphene.ObjectType):
     service = graphene.Field(ServicePrueba)
@@ -66,10 +73,9 @@ class Directory(graphene.ObjectType):
     id = graphene.Int()
     title = graphene.String()
     icon = graphene.String()
-    permits = graphene.Field(PermitsType)
+    kind = graphene.String()
     state = graphene.Boolean()
     description = graphene.String()
-    office = graphene.List(OfficeType)
 
     def resolve_id(self, info, **kwargs):
         return self.id
@@ -79,10 +85,7 @@ class Directory(graphene.ObjectType):
 
     def resolve_icon(self, info, **kwargs):
         return self.icon.image
-    
-    def resolve_permist(self, info, **kwargs):
-        return self.permits
-    
+
     def resolve_state(self, info, **kwargs):
         return self.state
     
@@ -100,31 +103,18 @@ class Directories(graphene.ObjectType):
 
 class Query(graphene.AbstractType):
     directories = graphene.List(Directories, title=graphene.String())
-    services = graphene.List(Services)
+    services = graphene.List(ServiceType)
 
-    get_all_services = graphene.List(ServiceType,kind=graphene.String())
+    map = graphene.List(LocationType,id=graphene.Int())
+    catalog = graphene.List(MissingItemType,id=graphene.Int())
+    directory = graphene.List(OfficeType,id=graphene.Int())
 
-    get_map = graphene.List(LocationType,id=graphene.Int())
-    get_catalog = graphene.List(MissingItemType,id=graphene.Int())
-    get_directory = graphene.List(OfficeType,id=graphene.Int())
+    location = graphene.Field(LocationType,id=graphene.Int())
+    item = graphene.Field(MissingItemType,id=graphene.Int())
+    office = graphene.Field(OfficeType,id=graphene.Int())
 
-    get_icon = graphene.List(IconType,id=graphene.Int())
-    get_kind = graphene.List(IconType,id=graphene.Int())
-    get_permits = graphene.List(PermitsType,id=graphene.Int())
 
-    get_service = graphene.Field(ServiceType,id=graphene.Int())
-    get_location = graphene.Field(LocationType,id=graphene.Int())
-    get_item = graphene.Field(MissingItemType,id=graphene.Int())
-    get_office = graphene.Field(OfficeType,id=graphene.Int())
-
-    def resolve_get_all_services(self, info, **kwargs):
-        kind = kwargs.get('kind')
-        if kind is not None:
-            return Service.objects.all().filter(kind=kind)
-        
-        return Service.objects.all()
-
-    def resolve_get_map(self, info, **kwargs):
+    def resolve_map(self, info, **kwargs):
         id = kwargs.get('id')
         source = None
 
@@ -136,7 +126,7 @@ class Query(graphene.AbstractType):
 
         return Location.objects.all()
 
-    def resolve_get_catalog(self, info, **kwargs):
+    def resolve_catalog(self, info, **kwargs):
         id = kwargs.get('id')
         source = None
 
@@ -148,7 +138,7 @@ class Query(graphene.AbstractType):
 
         return MissingItem.objects.all()
 
-    def resolve_get_directory(self, info, **kwargs):
+    def resolve_directory(self, info, **kwargs):
         id = kwargs.get('id')
         source = None
 
@@ -160,39 +150,7 @@ class Query(graphene.AbstractType):
 
         return Office.objects.all().order_by('service')
 
-    def resolve_get_icon(self, info, **kwargs):
-        id = kwargs.get('id')
-
-        if id is not None:
-            return Service.objects.get(pk=id).icon    
-
-        return Icons.objects.all()
-
-    def resolve_get_kind(self, info, **kwargs):
-        id = kwargs.get('id')
-
-        if id is not None:
-            return Service.objects.get(pk=id).kind  
-
-        return Kind.objects.all()
-
-    def resolve_get_permits(self, info, **kwargs):
-        id = kwargs.get('id')
-
-        if id is not None:
-            return Service.objects.get(pk=id).permits   
-
-        return Permits.objects.all()
-
-    def resolve_get_service(self, info, **kwargs):
-        id = kwargs.get('id')
-
-        if id is not None:
-            return Service.objects.get(pk=id)
-
-        return None
-
-    def resolve_get_location(self, info, **kwargs):
+    def resolve_location(self, info, **kwargs):
         id = kwargs.get('id')
 
         if id is not None:
@@ -200,7 +158,7 @@ class Query(graphene.AbstractType):
 
         return None
 
-    def resolve_get_item(self, info, **kwargs):
+    def resolve_item(self, info, **kwargs):
         id = kwargs.get('id')
 
         if id is not None:
@@ -208,7 +166,7 @@ class Query(graphene.AbstractType):
 
         return None
 
-    def resolve_get_office(self, info, **kwargs):
+    def resolve_office(self, info, **kwargs):
         id = kwargs.get('id')
 
         if id is not None:

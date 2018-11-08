@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Rol
+from .models import UserGroups
 
-admin.site.register(Rol)
+admin.site.register(UserGroups)
 
 # Register your models here.

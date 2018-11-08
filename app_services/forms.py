@@ -34,7 +34,7 @@ class QueryForm(forms.ModelForm):
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ["title", "icon", "kind", "state", "permits", "description"]
+        fields = ["title", "icon", "kind", "state", "description"]
         error_messages = {"title": {"unique": "El nombre del servicio ya existe."}}
 
 

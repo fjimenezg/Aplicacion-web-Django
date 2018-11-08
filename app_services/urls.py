@@ -10,8 +10,8 @@ urlpatterns = [
     path('services/<int:pk>/delete', ServiceDeleteView.as_view(), name='service-delete'),
 
     # Catalogo de objetos perdidos
-    path('services/items/list', MissingItemListView.as_view(), name='item-list'),
-    path('services/items/<int:service_id>/configure', item_configure, name='item-configure'),
+    #path('services/items/list', MissingItemListView.as_view(), name='item-list'),
+    path('services/items/<int:service_id>', item_configure, name='item-configure'),
     path('services/items/<int:service_id>/create', item_create, name='item-create'),
     path('services/items/<int:service_id>/<int:pk>/edit', MissingItemUpdateView.as_view(), name='item-edit'),   
     path('services/items/<int:service_id>/<int:pk>/delete', MissingItemDeleteView.as_view(), name='item-delete'),

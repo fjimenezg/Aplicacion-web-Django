@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView, DetailView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from .models import *
 from .forms import *
 from django.http import JsonResponse
@@ -35,34 +35,39 @@ def item_configure(request,service_id):
     return render(request, 'Services/item_configure.html', {'object_list':items,'service':service})
 
 def item_create(request,service_id):
-    success_url = reverse_lazy('service-list')
+    form = MissingItemForm()
     if request.method == 'POST':
         form = MissingItemForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.Service = Service.objects.get(pk=service_id)
+            post.service = Service.objects.get(pk=service_id)
             post.save()
-            return render(request, 'Services/item_form.html')
+            return redirect('/services/items/'+str(service_id))
 
-    else: 
-        form = MissingItemForm()
-        return render(request, 'Services/item_form.html', {'form':form, 'service_id':service_id})
+    return render(request, 'Services/item_form.html', {'form':form, 'service_id':service_id})
 
-class MissingItemListView(ListView):
-    model = MissingItem
-    template_name = "Services/item_detail.html"
+def item_edit(request,service_id,item_id):
+    form = MissingItemForm(request.GET)
+    if request.method == 'POST':
+        form = MissingItemForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.service = Service.objects.get(pk=service_id)
+            post.save()
+            return redirect('/services/items/'+str(service_id))
 
-class MissingItemCreateView(CreateView):
-    model = MissingItem
-    fields = '__all__'
-    #form_class = MissingItemForm
-    #template_name = "Services/item_form.html"
+    return render(request, 'Services/item_form.html', {'form':form, 'service_id':service_id})
 
 class MissingItemUpdateView(UpdateView):
     model = MissingItem
-    fields = '__all__'
-    #form_class = MissingItemForm
-    #template_name = "Services/item_form.html"
+    form_class = MissingItemForm
+    template_name = "Services/item_form.html"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.service = Service.objects.get(id=self.kwargs["service_id"])
+        self.object.save()
+        return redirect('/services/items/'+self.kwargs["service_id"])
 
 class MissingItemDeleteView(DeleteView):
     model = MissingItem

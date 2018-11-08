@@ -5,14 +5,12 @@ from app_connection.models import Connection
 import ast
 
 # Create your models here.
-class Permits(models.Model):
-    title = models.CharField(max_length=100, unique=True)
-    student = models.BooleanField(default=False)
-    teacher = models.BooleanField(default=False)
-    clerk = models.BooleanField(default=False)
+class Group(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    sql_auth = models.CharField(max_length=300)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 class Icon(models.Model):
     title = models.CharField(max_length=100, unique=True)
@@ -22,7 +20,7 @@ class Icon(models.Model):
         return self.title
 
 class Kind(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.SlugField(primary_key=True)
     title = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=300, blank=True)
 
@@ -34,7 +32,7 @@ class Service(models.Model):
     title = models.CharField(max_length=100, unique=True)
     icon = models.ForeignKey(Icon, on_delete="PROTECTED")
     kind = models.ForeignKey(Kind, on_delete="PROTECTED")
-    permits = models.ForeignKey(Permits, on_delete="PROTECTED")
+    groups = models.ManyToManyField(Group)
     state = models.BooleanField(default=False)
     description = models.CharField(max_length=300, blank=True)
     
@@ -112,7 +110,7 @@ class MissingItem(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('item-list')
+        return reverse('item-configure'+service.id)
 
 class Office(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
