@@ -34,7 +34,7 @@ class ServiceType(graphene.ObjectType):
         return self.title
 
     def resolve_icon(self, info, **kwargs):
-        return self.icon.image
+        return self.icon.image.url
     
     def resolve_kind(self, info, **kwargs):
         if self.kind.id == 'directory':

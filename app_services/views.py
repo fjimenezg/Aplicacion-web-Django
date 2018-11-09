@@ -37,7 +37,7 @@ def item_configure(request,service_id):
 def item_create(request,service_id):
     form = MissingItemForm()
     if request.method == 'POST':
-        form = MissingItemForm(request.POST)
+        form = MissingItemForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.service = Service.objects.get(pk=service_id)
@@ -49,7 +49,7 @@ def item_create(request,service_id):
 def item_edit(request,service_id,item_id):
     form = MissingItemForm(request.GET)
     if request.method == 'POST':
-        form = MissingItemForm(request.POST)
+        form = MissingItemForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.service = Service.objects.get(pk=service_id)

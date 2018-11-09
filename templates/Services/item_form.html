@@ -15,7 +15,7 @@
                     <strong>{{ form.title.errors }}</strong>
                 </div>
                 {% endif %}
-                <form method="post" class="post-form">
+                <form enctype="multipart/form-data" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <div id="button_save">

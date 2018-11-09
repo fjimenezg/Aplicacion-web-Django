@@ -104,13 +104,10 @@ class MissingItem(models.Model):
     title = models.CharField(max_length=100, unique=True) 
     description = models.CharField(max_length=200) 
     date = models.DateField(auto_now_add=True)
-    photo = models.ImageField(blank=True, upload_to='photos')
+    photo = models.ImageField(upload_to='photos')
     
     def __str__(self):
         return self.title
-
-    def get_absolute_url(self):
-        return reverse('item-configure'+service.id)
 
 class Office(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
@@ -122,9 +119,6 @@ class Office(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_absolute_url(self):
-        return reverse('office-list')
 
 class Location(models.Model):
     service = models.ForeignKey(Service, on_delete="CASCADE",
@@ -138,9 +132,6 @@ class Location(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_absolute_url(self):
-        return reverse('location-list')
 
 
 

@@ -35,22 +35,22 @@
                     <a type="button" class="btn btn-primary" href="{% url 'service-edit' service.id %}"> <!---->
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar
                     </a> 
-                    {% if service.kind.id == 1 %}
+                    {% if service.kind.id == 'catalog' %}
                     <a type="button" class="btn btn-primary" href="{% url 'item-configure' service.id %}"> <!---->
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind.id == 4 %}
+                    {% if service.kind.id == 'query' %}
                     <a type="button" class="btn btn-primary" href="{% url 'query-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind.id == 3 %}
+                    {% if service.kind.id == 'map' %}
                     <a type="button" class="btn btn-primary" href="{% url 'location-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
                     {% endif %}
-                    {% if service.kind.id == 2 %}
+                    {% if service.kind.id == 'directory' %}
                     <a type="button" class="btn btn-primary" href="{% url 'office-configure' service.id %}"> 
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Configurar
                     </a> 
